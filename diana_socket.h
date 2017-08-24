@@ -36,5 +36,11 @@ SOFTWARE.
 #include <lualib.h>
 #include <lauxlib.h>
 
+int diana_socket_tcp(lua_State* L);
+int diana_socket_udp(lua_State* L);
+int diana_socket_bind(lua_State* L);
+int diana_socket_connect(lua_State* L);
+int diana_socket_listen(lua_State* L);
+int diana_socket_accept(lua_State* L);
 
 #endif // DIANA_SOCKET_H

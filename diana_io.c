@@ -37,7 +37,8 @@ SOFTWARE.
 #include "diana_io.h"
 
 /* Index in Lua Registry */
-static const void* const DIANA_IO_HANDLE = "DIANA_IO";
+static const int DIANA_IO = 0;
+void* DIANA_IO_KEY = (void*)&DIANA_IO;
 
 
 /* private */
@@ -46,6 +47,9 @@ static void diana_io_pack(lua_State* L,int fd);
 /* execute while require("diana.io") */
 int luaopen_diana_io(lua_State* L)
 {
+	/* Key of Lua Registry */
+	lua_pushlightuserdata(L,DIANA_IO_KEY);
+
 	/* create a table to store diana.io */
 	lua_newtable(L); // diana.io
 	
@@ -68,9 +72,9 @@ int luaopen_diana_io(lua_State* L)
 	lua_setfield(L,-2,"string");
 	
 	/* Set registry */
-	lua_setfield(L,LUA_REGISTRYINDEX,DIANA_IO_HANDLE);
-	lua_getfield(L,LUA_REGISTRYINDEX,DIANA_IO_HANDLE);
-	
+	lua_settable(L,LUA_REGISTRYINDEX);
+	lua_pushlightuserdata(L,DIANA_IO_KEY);
+	lua_gettable(L,LUA_REGISTRYINDEX);
 	
 	return 1;
 }
@@ -174,6 +178,8 @@ int diana_io_close(lua_State* L)
 	int fd = luaL_checkinteger(L,-1);
 	lua_getfield(L,1,"__bypopen");
 	int bypopen = lua_toboolean(L,-1);
+	lua_pushinteger(L,-1);
+	lua_setfield(L,1,"__fd");
 	if(bypopen)  // fd is opened by fdpopen
 	{
 		lua_pushinteger(L,fdpclose(fd));
@@ -338,8 +344,8 @@ int diana_io_string(lua_State* L)
 {
 	lua_getfield(L,1,"__fd");
 	int fd = luaL_checkinteger(L,-1);
-	lua_pushfstring(L,"file descriptor: %d",fd);
-	
+	lua_pushfstring(L,"file: %d",fd);
+
 	return 1;
 }
 
@@ -354,7 +360,8 @@ static void diana_io_pack(lua_State* L,int fd)
 	lua_setfield(L,-2,"__fd"); // t['__fd'] = fd
 	
 	lua_newtable(L); // as metatable
-	lua_getfield(L,LUA_REGISTRYINDEX,DIANA_IO_HANDLE);
+	lua_pushlightuserdata(L,DIANA_IO_KEY);
+	lua_gettable(L,LUA_REGISTRYINDEX);
 	lua_setfield(L,-2,"__index");
 	lua_pushcfunction(L,diana_io_close);
 	lua_setfield(L,-2,"__gc"); // gc

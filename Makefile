@@ -1,11 +1,18 @@
-diana.so : diana_io.o fdpopen.o
-	gcc -O2 -shared -W -Wall -o diana.so diana_io.o fdpopen.o
+CC = gcc
+FLAGS = -O2 -shared -W -Wall -fPIC
+
+
+diana.so : diana_io.o fdpopen.o diana_socket.o
+	$(CC) $(FLAGS)  -o diana.so diana_io.o fdpopen.o diana_socket.o
 	
 diana_io.o : diana_io.c diana_io.h
-	gcc -O2 -W -Wall -fPIC -c diana_io.c
+	$(CC) $(FLAGS) -c diana_io.c
 	
 fdpopen.o : fdpopen.c fdpopen.h
-	gcc -O2 -W -Wall -fPIC -c fdpopen.c
+	$(CC) $(FLAGS) -c fdpopen.c
+
+diana_socket.o : diana_socket.c diana_socket.h diana_io.h
+	$(CC) $(FLAGS) -c diana_socket.c
 
 clean :
 	rm *.o
