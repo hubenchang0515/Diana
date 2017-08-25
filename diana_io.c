@@ -40,13 +40,14 @@ SOFTWARE.
 static const int DIANA_IO = 0;
 void* DIANA_IO_KEY = (void*)&DIANA_IO;
 
-
 /* private */
 static void diana_io_pack(lua_State* L,int fd);
+
 
 /* execute while require("diana.io") */
 int luaopen_diana_io(lua_State* L)
 {
+	
 	/* Key of Lua Registry */
 	lua_pushlightuserdata(L,DIANA_IO_KEY);
 
@@ -250,6 +251,10 @@ int diana_io_read(lua_State* L)
 #	undef BUFFER_SIZE
 #endif
 	
+	if(len == 0 && number == 1)
+	{
+		lua_pushstring(L,"");
+	}
 	lua_concat(L,number);// concat all strings
 	lua_pushinteger(L,length);
 	
