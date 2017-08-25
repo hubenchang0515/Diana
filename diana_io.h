@@ -44,7 +44,6 @@ int diana_io_read(lua_State* L);
 int diana_io_write(lua_State* L);
 int diana_io_seek(lua_State* L);
 int diana_io_equal(lua_State* L);
-int diana_io_popen(lua_State* L);
 int diana_io_string(lua_State* L);
 
 #endif // DIANA_IO_H

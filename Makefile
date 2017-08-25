@@ -1,10 +1,10 @@
 CC = gcc
-FLAGS = -O2 -shared -W -Wall -fPIC
+FLAGS = -O2 -W -Wall -fPIC
 
 .PHONY : install clean 
 
 diana.so : diana_io.o fdpopen.o diana_socket.o
-	$(CC) $(FLAGS)  -o diana.so diana_io.o fdpopen.o diana_socket.o
+	$(CC) $(FLAGS) -shared -o diana.so diana_io.o fdpopen.o diana_socket.o
 	
 diana_io.o : diana_io.c diana_io.h
 	$(CC) $(FLAGS) -c diana_io.c
