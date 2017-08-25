@@ -33,6 +33,7 @@ SOFTWARE.
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
+#include <errno.h>
 #include "fdpopen.h"
 #include "diana_io.h"
 
@@ -67,6 +68,8 @@ int luaopen_diana_io(lua_State* L)
 	lua_setfield(L,-2,"write");
 	lua_pushcfunction(L,diana_io_seek);
 	lua_setfield(L,-2,"seek");
+	lua_pushcfunction(L,diana_io_error);
+	lua_setfield(L,-2,"error");
 	lua_pushcfunction(L,diana_io_seek);
 	lua_setfield(L,-2,"equal");
 	lua_pushcfunction(L,diana_io_string);
@@ -323,6 +326,15 @@ int diana_io_seek(lua_State* L)
 	off_t pos = lseek(fd,offset,fromwhere);
 	lua_pushinteger(L,pos);
 	
+	return 1;
+}
+
+
+/* return error string */
+int diana_io_error(lua_State* L)
+{
+	lua_pushstring(L,strerror(errno));
+
 	return 1;
 }
 

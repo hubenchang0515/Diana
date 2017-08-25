@@ -73,6 +73,8 @@ int luaopen_diana_socket(lua_State* L)
 	lua_setfield(L,-2,"write");
 	lua_pushcfunction(L,diana_io_close);
 	lua_setfield(L,-2,"close");
+	lua_pushcfunction(L,diana_io_error);
+	lua_setfield(L,-2,"error");
 	lua_pushcfunction(L,diana_io_string);
 	lua_setfield(L,-2,"string");
 	
