@@ -33,8 +33,17 @@ SOFTWARE.
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <lualib.h>
+#include <lauxlib.h>
+
 #include "diana_io.h"
-#include "diana_socket.h"
+
+static int diana_socket_tcp(lua_State* L);
+static int diana_socket_udp(lua_State* L);
+static int diana_socket_bind(lua_State* L);
+static int diana_socket_connect(lua_State* L);
+static int diana_socket_listen(lua_State* L);
+static int diana_socket_accept(lua_State* L);
 
 /* Index in Lua Registry */
 static const int DIANA_SOCKET = 0;
@@ -90,7 +99,7 @@ int luaopen_diana_socket(lua_State* L)
 
 
 /* Create a TCP socket */
-int diana_socket_tcp(lua_State* L)
+static int diana_socket_tcp(lua_State* L)
 {
     int fd = socket(AF_INET,SOCK_STREAM,0);
 	if(fd == -1)
@@ -107,7 +116,7 @@ int diana_socket_tcp(lua_State* L)
 
 
 /* Create a UDP socket */
-int diana_socket_udp(lua_State* L)
+static int diana_socket_udp(lua_State* L)
 {
 	int fd = socket(AF_INET,SOCK_DGRAM,0);
 	if(fd == -1)
@@ -124,7 +133,7 @@ int diana_socket_udp(lua_State* L)
 #include <stdio.h>
 
 /* Socket bind */
-int diana_socket_bind(lua_State* L)
+static int diana_socket_bind(lua_State* L)
 {
 	struct sockaddr_in addr;
 	lua_getfield(L,1,"__fd");
@@ -155,7 +164,7 @@ int diana_socket_bind(lua_State* L)
 }
 
 /* socket connect */
-int diana_socket_connect(lua_State* L)
+static int diana_socket_connect(lua_State* L)
 {
 	struct sockaddr_in addr;
 	lua_getfield(L,1,"__fd");
@@ -186,7 +195,7 @@ int diana_socket_connect(lua_State* L)
 
 
 /* socket listen */
-int diana_socket_listen(lua_State* L)
+static int diana_socket_listen(lua_State* L)
 {
 	lua_getfield(L,1,"__fd");
 	int fd = luaL_checkinteger(L,-1);
@@ -218,7 +227,7 @@ int diana_socket_listen(lua_State* L)
 
 
 /* socket accept */
-int diana_socket_accept(lua_State* L)
+static int diana_socket_accept(lua_State* L)
 {
 	lua_getfield(L,1,"__fd");
 	int fd = luaL_checkinteger(L,-1);

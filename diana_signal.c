@@ -5,7 +5,7 @@
 static lua_State* diana_signal_L;
 static lua_State* luaL;
 
-int diana_signal_set(lua_State* L);
+static int diana_signal_set(lua_State* L);
 static void diana_signal_callback(int sig);
 
 struct sig_reg
@@ -43,11 +43,12 @@ int luaopen_diana_signal(lua_State* L)
     return 1;
 }
 
-int diana_signal_set(lua_State* L)
+static int diana_signal_set(lua_State* L)
 {
 
     int sig = luaL_checkinteger(L,1);
     int len = lua_gettop(diana_signal_L);
+
 
     /* Ensure sig is a valid index */
     while(len < sig)
