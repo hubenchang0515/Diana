@@ -226,14 +226,14 @@ int diana_io_read(lua_State* L)
 			buffer[len] = 0;
 			bytes -= len;
 			length += len;
-			lua_pushstring(L,buffer);
+			lua_pushlstring(L,buffer,len);
 			number++;
 		}
 		if(bytes > 0)
 		{
 			len = read(fd,buffer,bytes);
 			buffer[len] = 0;
-			lua_pushstring(L,buffer);
+			lua_pushlstring(L,buffer,len);
 			length += len;
 			number++;
 		}
@@ -245,7 +245,7 @@ int diana_io_read(lua_State* L)
 		{
 			len = read(fd,buffer,BUFFER_SIZE); 
 			buffer[len] = 0;
-			lua_pushstring(L,buffer);
+			lua_pushlstring(L,buffer,len);
 			length += len;
 			number++;
 		}while(len == BUFFER_SIZE);
@@ -271,11 +271,12 @@ int diana_io_read(lua_State* L)
  */
 int diana_io_write(lua_State* L)
 {
-	const char* data = luaL_checkstring(L,2);
+	size_t len;
+	const char* data = luaL_checklstring(L,2,&len);
 	lua_getfield(L,1,"__fd");
 	int fd = luaL_checkinteger(L,-1);
 	
-	ssize_t len = write(fd,data,strlen(data));
+	len = write(fd,data,len);
 	lua_pushinteger(L,len);
 	
 	return 1;

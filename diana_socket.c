@@ -29,7 +29,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 */
-
+#include <unistd.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -108,6 +108,12 @@ static int diana_socket_tcp(lua_State* L)
 	}
 	else
 	{
+		int n = 1;
+		if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR, &n, sizeof(n)) < 0)
+		{
+			close(fd);
+			lua_pushnil(L);
+		}
     	diana_socket_pack(L,fd,AF_INET,SOCK_STREAM,0);
 	}
 
@@ -125,6 +131,12 @@ static int diana_socket_udp(lua_State* L)
 	}
 	else
 	{
+		int n = 1;
+		if(setsockopt(fd,SOL_SOCKET,SO_REUSEADDR, &n, sizeof(n)) < 0)
+		{
+			close(fd);
+			lua_pushnil(L);
+		}
 		diana_socket_pack(L,fd,AF_INET,SOCK_DGRAM,0);
 	}
 
